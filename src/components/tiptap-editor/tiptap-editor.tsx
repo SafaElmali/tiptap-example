@@ -8,6 +8,12 @@ import Placeholder from "@tiptap/extension-placeholder";
 import TextAlign from "@tiptap/extension-text-align";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import CharacterCount from "@tiptap/extension-character-count";
+import Underline from "@tiptap/extension-underline";
+import TextStyle from "@tiptap/extension-text-style";
+import Color from "@tiptap/extension-color";
+import Highlight from "@tiptap/extension-highlight";
+import Subscript from "@tiptap/extension-subscript";
+import Superscript from "@tiptap/extension-superscript";
 import { FC, useState } from "react";
 import { BubbleMenu } from "./bubble-menu";
 import { MenuBar } from "./menu-bar";
@@ -61,6 +67,14 @@ const TipTapEditor: FC<TipTapEditorProps> = ({ content = "", onChange }) => {
       CharacterCount.configure({
         limit: CHAR_LIMIT,
       }),
+      Underline,
+      TextStyle,
+      Color,
+      Highlight.configure({
+        multicolor: true,
+      }),
+      Subscript,
+      Superscript,
     ],
     content,
     editorProps: {
