@@ -7,37 +7,27 @@ import Image from "@tiptap/extension-image";
 import Placeholder from "@tiptap/extension-placeholder";
 import TextAlign from "@tiptap/extension-text-align";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
-import { common, createLowlight } from "lowlight";
-import javascript from "highlight.js/lib/languages/javascript";
-import css from "highlight.js/lib/languages/css";
-import typescript from "highlight.js/lib/languages/typescript";
-import xml from "highlight.js/lib/languages/xml";
-import python from "highlight.js/lib/languages/python";
-import bash from "highlight.js/lib/languages/bash";
+import CharacterCount from "@tiptap/extension-character-count";
 import { FC, useState } from "react";
 import { BubbleMenu } from "./bubble-menu";
 import { MenuBar } from "./menu-bar";
 import { LinkDialog } from "./link-dialog";
+import useLowlight from "@/hooks/use-lowlight";
+import { Progress } from "@/components/ui/progress";
+import { cn } from "@/lib/utils";
+
+const CHAR_LIMIT = 280;
 
 type TipTapEditorProps = {
   content?: string;
   onChange?: (content: string) => void;
 };
 
-const lowlight = createLowlight(common);
-// Register languages
-lowlight.register('html', xml);
-lowlight.register('css', css);
-lowlight.register('js', javascript);
-lowlight.register('javascript', javascript);
-lowlight.register('typescript', typescript);
-lowlight.register('ts', typescript);
-lowlight.register('python', python);
-lowlight.register('bash', bash);
-lowlight.register('sh', bash);
-
 const TipTapEditor: FC<TipTapEditorProps> = ({ content = "", onChange }) => {
   const [linkDialogOpen, setLinkDialogOpen] = useState(false);
+  const [characterCount, setCharacterCount] = useState(0);
+  const lowlight = useLowlight();
+  
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -45,7 +35,7 @@ const TipTapEditor: FC<TipTapEditorProps> = ({ content = "", onChange }) => {
       }),
       CodeBlockLowlight.configure({
         lowlight,
-        defaultLanguage: 'javascript',
+        defaultLanguage: "javascript",
         HTMLAttributes: {
           class: "not-prose rounded-md bg-secondary p-4",
         },
@@ -68,6 +58,9 @@ const TipTapEditor: FC<TipTapEditorProps> = ({ content = "", onChange }) => {
         types: ["heading", "paragraph"],
         alignments: ["left", "center", "right", "justify"],
       }),
+      CharacterCount.configure({
+        limit: CHAR_LIMIT,
+      }),
     ],
     content,
     editorProps: {
@@ -78,6 +71,7 @@ const TipTapEditor: FC<TipTapEditorProps> = ({ content = "", onChange }) => {
     },
     onUpdate: ({ editor }) => {
       onChange?.(editor.getHTML());
+      setCharacterCount(editor.storage.characterCount.characters());
     },
   });
 
@@ -91,6 +85,9 @@ const TipTapEditor: FC<TipTapEditorProps> = ({ content = "", onChange }) => {
     setLinkDialogOpen(open);
   };
 
+  const progress = (characterCount / CHAR_LIMIT) * 100;
+  const isOverLimit = characterCount > CHAR_LIMIT;
+
   return (
     <div className="w-full border rounded-lg overflow-hidden">
       {editor && <BubbleMenu editor={editor} onLinkClick={onLinkClick} />}
@@ -100,6 +97,30 @@ const TipTapEditor: FC<TipTapEditorProps> = ({ content = "", onChange }) => {
         onLinkDialogOpen={setLinkDialogOpen}
       />
       <EditorContent editor={editor} />
+      <div className="flex items-center justify-between px-4 py-2 border-t">
+        <div className="flex items-center gap-2">
+          <Progress 
+            value={progress} 
+            max={100}
+            className={cn(
+              "w-16 h-2",
+              isOverLimit ? "bg-red-200 dark:bg-red-900" : "bg-secondary",
+              progress >= 80 && !isOverLimit && "bg-yellow-200 dark:bg-yellow-900"
+            )}
+            indicatorClassName={cn(
+              isOverLimit ? "bg-red-500" : "bg-primary",
+              progress >= 80 && !isOverLimit && "bg-yellow-500"
+            )}
+          />
+          <span className={cn(
+            "text-sm",
+            isOverLimit ? "text-red-500" : "text-muted-foreground",
+            progress >= 80 && !isOverLimit && "text-yellow-500"
+          )}>
+            {characterCount}/{CHAR_LIMIT}
+          </span>
+        </div>
+      </div>
       <LinkDialog
         open={linkDialogOpen}
         onOpenChange={setLinkDialogOpen}
