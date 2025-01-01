@@ -2,6 +2,7 @@
 
 import { type Editor } from "@tiptap/react";
 import { FC, useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Bold,
   Italic,
@@ -22,9 +23,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
-import { ImageUploadButton } from "./plugins/image-upload-button";
-import { LinkDialog } from "./plugins/link-dialog";
-import { MenuButton } from "./plugins/menu-button";
+import { ImageUploadButton } from "./image-upload-button";
+import { LinkDialog } from "./link-dialog";
 
 type MenuBarProps = {
   editor: Editor | null;
@@ -92,103 +92,143 @@ const MenuBar: FC<MenuBarProps> = ({
 
   return (
     <div className="border-b border-border bg-background p-2 flex gap-1 flex-wrap">
-      <MenuButton
+      <Button
+        variant="ghost"
+        size="sm"
         onClick={() => editor.chain().focus().toggleBold().run()}
-        isActive={editor.isActive("bold")}
+        data-active={editor.isActive("bold")}
+        className={editor.isActive("bold") ? "bg-muted" : ""}
       >
         <Bold className="h-4 w-4" />
-      </MenuButton>
-      <MenuButton
+      </Button>
+      <Button
+        variant="ghost"
+        size="sm"
         onClick={() => editor.chain().focus().toggleItalic().run()}
-        isActive={editor.isActive("italic")}
+        data-active={editor.isActive("italic")}
+        className={editor.isActive("italic") ? "bg-muted" : ""}
       >
         <Italic className="h-4 w-4" />
-      </MenuButton>
-      <MenuButton
+      </Button>
+      <Button
+        variant="ghost"
+        size="sm"
         onClick={() => editor.chain().focus().toggleStrike().run()}
-        isActive={editor.isActive("strike")}
+        data-active={editor.isActive("strike")}
+        className={editor.isActive("strike") ? "bg-muted" : ""}
       >
         <Strikethrough className="h-4 w-4" />
-      </MenuButton>
-      <MenuButton
+      </Button>
+      <Button
+        variant="ghost"
+        size="sm"
         onClick={() => editor.chain().focus().toggleBulletList().run()}
-        isActive={editor.isActive("bulletList")}
+        data-active={editor.isActive("bulletList")}
+        className={editor.isActive("bulletList") ? "bg-muted" : ""}
       >
         <List className="h-4 w-4" />
-      </MenuButton>
-      <MenuButton
+      </Button>
+      <Button
+        variant="ghost"
+        size="sm"
         onClick={() => editor.chain().focus().toggleOrderedList().run()}
-        isActive={editor.isActive("orderedList")}
+        data-active={editor.isActive("orderedList")}
+        className={editor.isActive("orderedList") ? "bg-muted" : ""}
       >
         <ListOrdered className="h-4 w-4" />
-      </MenuButton>
-      <MenuButton
+      </Button>
+      <Button
+        variant="ghost"
+        size="sm"
         onClick={() => editor.chain().focus().toggleBlockquote().run()}
-        isActive={editor.isActive("blockquote")}
+        data-active={editor.isActive("blockquote")}
+        className={editor.isActive("blockquote") ? "bg-muted" : ""}
       >
         <Quote className="h-4 w-4" />
-      </MenuButton>
-      <MenuButton
+      </Button>
+      <Button
+        variant="ghost"
+        size="sm"
         onClick={() => editor.chain().focus().setHorizontalRule().run()}
       >
         <MinusSquare className="h-4 w-4" />
-      </MenuButton>
-      <MenuButton
+      </Button>
+      <Button
+        variant="ghost"
+        size="sm"
         onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-        isActive={editor.isActive("codeBlock")}
+        data-active={editor.isActive("codeBlock")}
+        className={editor.isActive("codeBlock") ? "bg-muted" : ""}
       >
         <Code className="h-4 w-4" />
-      </MenuButton>
+      </Button>
       <ImageUploadButton editor={editor} />
-      <MenuButton
+      <Button
+        variant="ghost"
+        size="sm"
         onClick={() => editor.chain().focus().undo().run()}
         disabled={!editor.can().undo()}
       >
         <Undo className="h-4 w-4" />
-      </MenuButton>
-      <MenuButton
+      </Button>
+      <Button
+        variant="ghost"
+        size="sm"
         onClick={() => editor.chain().focus().redo().run()}
         disabled={!editor.can().redo()}
       >
         <Redo className="h-4 w-4" />
-      </MenuButton>
-      <MenuButton
+      </Button>
+      <Button
+        variant="ghost"
+        size="sm"
         onClick={() => onLinkDialogOpen(true)}
-        isActive={editor.isActive("link")}
+        data-active={editor.isActive("link")}
+        className={editor.isActive("link") ? "bg-muted" : ""}
       >
         <Link2 className="h-4 w-4" />
-      </MenuButton>
-      <MenuButton
+      </Button>
+      <Button
+        variant="ghost"
+        size="sm"
         onClick={() => editor.chain().focus().setTextAlign("left").run()}
-        isActive={editor.isActive({ textAlign: "left" })}
+        className={editor.isActive({ textAlign: "left" }) ? "bg-muted" : ""}
       >
         <AlignLeft className="h-4 w-4" />
-      </MenuButton>
-      <MenuButton
+      </Button>
+      <Button
+        variant="ghost"
+        size="sm"
         onClick={() => editor.chain().focus().setTextAlign("center").run()}
-        isActive={editor.isActive({ textAlign: "center" })}
+        className={editor.isActive({ textAlign: "center" }) ? "bg-muted" : ""}
       >
         <AlignCenter className="h-4 w-4" />
-      </MenuButton>
-      <MenuButton
+      </Button>
+      <Button
+        variant="ghost"
+        size="sm"
         onClick={() => editor.chain().focus().setTextAlign("right").run()}
-        isActive={editor.isActive({ textAlign: "right" })}
+        className={editor.isActive({ textAlign: "right" }) ? "bg-muted" : ""}
       >
         <AlignRight className="h-4 w-4" />
-      </MenuButton>
-      <MenuButton
+      </Button>
+      <Button
+        variant="ghost"
+        size="sm"
         onClick={() => editor.chain().focus().setTextAlign("justify").run()}
-        isActive={editor.isActive({ textAlign: "justify" })}
+        className={editor.isActive({ textAlign: "justify" }) ? "bg-muted" : ""}
       >
         <AlignJustify className="h-4 w-4" />
-      </MenuButton>
+      </Button>
       <div className="flex-1" />
-      <MenuButton
+      <Button
+        variant="ghost"
+        size="sm"
         onClick={enhanceContent}
         disabled={isEnhancing}
       >
         <Wand2 className={cn("h-4 w-4", isEnhancing && "animate-spin")} />
-      </MenuButton>
+      </Button>
 
       <LinkDialog
         open={linkDialogOpen}
