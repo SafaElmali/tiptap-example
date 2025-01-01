@@ -6,6 +6,14 @@ import Link from "@tiptap/extension-link";
 import Image from "@tiptap/extension-image";
 import Placeholder from "@tiptap/extension-placeholder";
 import TextAlign from "@tiptap/extension-text-align";
+import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
+import { common, createLowlight } from "lowlight";
+import javascript from "highlight.js/lib/languages/javascript";
+import css from "highlight.js/lib/languages/css";
+import typescript from "highlight.js/lib/languages/typescript";
+import xml from "highlight.js/lib/languages/xml";
+import python from "highlight.js/lib/languages/python";
+import bash from "highlight.js/lib/languages/bash";
 import { FC, useState } from "react";
 import { BubbleMenu } from "./bubble-menu";
 import { MenuBar } from "./menu-bar";
@@ -16,11 +24,32 @@ type TipTapEditorProps = {
   onChange?: (content: string) => void;
 };
 
+const lowlight = createLowlight(common);
+// Register languages
+lowlight.register('html', xml);
+lowlight.register('css', css);
+lowlight.register('js', javascript);
+lowlight.register('javascript', javascript);
+lowlight.register('typescript', typescript);
+lowlight.register('ts', typescript);
+lowlight.register('python', python);
+lowlight.register('bash', bash);
+lowlight.register('sh', bash);
+
 const TipTapEditor: FC<TipTapEditorProps> = ({ content = "", onChange }) => {
   const [linkDialogOpen, setLinkDialogOpen] = useState(false);
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        codeBlock: false,
+      }),
+      CodeBlockLowlight.configure({
+        lowlight,
+        defaultLanguage: 'javascript',
+        HTMLAttributes: {
+          class: "not-prose rounded-md bg-secondary p-4",
+        },
+      }),
       Link.configure({
         openOnClick: false,
         HTMLAttributes: {
@@ -44,7 +73,7 @@ const TipTapEditor: FC<TipTapEditorProps> = ({ content = "", onChange }) => {
     editorProps: {
       attributes: {
         class:
-          "prose prose-sm sm:prose-base dark:prose-invert focus:outline-none max-w-full p-4 h-full min-h-[200px]",
+          "prose prose-sm sm:prose-base dark:prose-invert focus:outline-none max-w-full p-4 h-full min-h-[200px] prose-pre:bg-muted/50 prose-pre:rounded-md",
       },
     },
     onUpdate: ({ editor }) => {

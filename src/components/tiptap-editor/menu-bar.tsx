@@ -18,6 +18,8 @@ import {
   AlignRight,
   AlignJustify,
   Wand2,
+  MinusSquare,
+  Code,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -144,6 +146,22 @@ const MenuBar: FC<MenuBarProps> = ({
       >
         <Quote className="h-4 w-4" />
       </Button>
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => editor.chain().focus().setHorizontalRule().run()}
+      >
+        <MinusSquare className="h-4 w-4" />
+      </Button>
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+        data-active={editor.isActive("codeBlock")}
+        className={editor.isActive("codeBlock") ? "bg-muted" : ""}
+      >
+        <Code className="h-4 w-4" />
+      </Button>
       <ImageUploadButton editor={editor} />
       <Button
         variant="ghost"
@@ -202,12 +220,12 @@ const MenuBar: FC<MenuBarProps> = ({
       >
         <AlignJustify className="h-4 w-4" />
       </Button>
+      <div className="flex-1" />
       <Button
         variant="ghost"
         size="sm"
         onClick={enhanceContent}
         disabled={isEnhancing}
-        className="ml-auto"
       >
         <Wand2 className={cn("h-4 w-4", isEnhancing && "animate-spin")} />
       </Button>
